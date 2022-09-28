@@ -1,9 +1,26 @@
 package main
 
 import (
-	"fmt"
+	"net/http"
+
+	"github.com/gin-gonic/gin"
 )
 
 func main() {
-	fmt.Println("Hello, world!")
+	// Creates default gin router with Logger and Recovery middleware already attached
+	router := gin.Default()
+
+	// Create API route group
+	api := router.Group("/api")
+	{
+		// Add /hello GET route to router and define route handler function
+		api.GET("/hello", func(ctx *gin.Context) {
+			ctx.JSON(200, gin.H{"msg": "world"})
+		})
+	}
+
+	router.NoRoute(func(ctx *gin.Context) { ctx.JSON(http.StatusNotFound, gin.H{}) })
+
+	// Start listening and serving requests
+	router.Run(":8080")
 }
